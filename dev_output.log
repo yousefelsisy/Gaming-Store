@@ -1,0 +1,20 @@
+
+> temp-app@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 531ms
+
+ GET / 200 in 3.5s (next.js: 3.2s, application-code: 259ms)
+ GET /register 200 in 1133ms (next.js: 871ms, application-code: 262ms)
+ GET /welcome 200 in 2.4s (next.js: 2.4s, application-code: 47ms)
+ GET /store 200 in 953ms (next.js: 891ms, application-code: 62ms)
+ GET /cart 200 in 754ms (next.js: 715ms, application-code: 39ms)
+ GET /checkout 200 in 611ms (next.js: 573ms, application-code: 37ms)
+ GET /register 200 in 83ms (next.js: 5ms, application-code: 78ms)
+ GET /welcome 200 in 45ms (next.js: 4ms, application-code: 41ms)
+ GET /store 200 in 64ms (next.js: 13ms, application-code: 51ms)
+ GET /cart 200 in 32ms (next.js: 4ms, application-code: 28ms)
+ GET /checkout 200 in 44ms (next.js: 4ms, application-code: 40ms)
