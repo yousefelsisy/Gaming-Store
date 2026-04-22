@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Store - Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: { 500: '#3b82f6', 600: '#2563eb' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --bg: #f8fafc; --fg: #020617; --border: #e2e8f0; --card: #ffffff; }
+        .dark { --bg: #020617; --fg: #f8fafc; --border: #1e293b; --card: #0f172a; }
+        body { background-color: var(--bg); color: var(--fg); min-height: 100vh; }
+    </style>
+</head>
+<body class="flex flex-col">
+    <nav class="border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-md">
+        <div class="container mx-auto flex h-20 items-center justify-between px-6">
+            <a href="store.html" class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                <span id="backToStore" class="font-bold">Store</span>
+            </a>
+            <h1 id="cartTitle" class="text-xl font-black italic">YOUR CRATE</h1>
+            <div class="w-10"></div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12 max-w-4xl">
+        <div id="cartItems" class="space-y-6"></div>
+
+        <div id="emptyMessage" class="hidden text-center py-20 space-y-4">
+            <div class="text-6xl opacity-20 italic font-black">EMPTY</div>
+            <p id="emptyText" class="opacity-60">Your crate is looking a bit light...</p>
+        </div>
+
+        <div id="cartFooter" class="mt-12 pt-8 border-t border-[var(--border)] hidden">
+            <div class="flex justify-between items-center mb-8">
+                <span id="totalLabel" class="text-2xl font-bold">TOTAL</span>
+                <span id="totalPrice" class="text-3xl font-black text-primary-500">$0.00</span>
+            </div>
+            <button onclick="location.href='checkout.html'" id="checkoutBtn" class="w-full bg-primary-600 text-white py-5 rounded-2xl text-xl font-black shadow-xl shadow-primary-500/30 hover:bg-primary-700 transition-all">
+                PROCEED TO CHECKOUT
+            </button>
+        </div>
+    </main>
+
+    <script>
+        let lang = localStorage.getItem('lang') || 'en';
+        let theme = localStorage.getItem('theme') || 'dark';
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        function updateUI() {
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.className = theme;
+            document.getElementById('backToStore').textContent = lang === 'ar' ? 'العودة للمتجر' : 'Store';
+            document.getElementById('cartTitle').textContent = lang === 'ar' ? 'سلة المشتريات' : 'YOUR CRATE';
+            document.getElementById('emptyText').textContent = lang === 'ar' ? 'سلتك فارغة حالياً...' : 'Your crate is looking a bit light...';
+            document.getElementById('totalLabel').textContent = lang === 'ar' ? 'الإجمالي' : 'TOTAL';
+            document.getElementById('checkoutBtn').textContent = lang === 'ar' ? 'إتمام الشراء' : 'PROCEED TO CHECKOUT';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            render();
+        }
+
+        function render() {
+            const container = document.getElementById('cartItems');
+            const footer = document.getElementById('cartFooter');
+            const empty = document.getElementById('emptyMessage');
+
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                footer.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            footer.classList.remove('hidden');
+
+            container.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center gap-6 bg-[var(--card)] border border-[var(--border)] p-4 rounded-2xl">
+                    <img src="${item.image}" class="w-24 h-24 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg">${item.name}</h3>
+                        <p class="text-primary-500 font-black">$${item.price}</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})" class="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((acc, item) => acc + item.price, 0);
+            document.getElementById('totalPrice').textContent = `$${total.toFixed(2)}`;
+        }
+
+        updateUI();
+        render();
+    </script>
+</body>
+</html>

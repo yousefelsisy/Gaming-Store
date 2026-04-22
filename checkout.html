@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Store - Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: { 500: '#3b82f6', 600: '#2563eb' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --bg: #f8fafc; --fg: #020617; --border: #e2e8f0; --card: #ffffff; --input-bg: #ffffff; }
+        .dark { --bg: #020617; --fg: #f8fafc; --border: #1e293b; --card: #0f172a; --input-bg: #1e293b; }
+        body { background-color: var(--bg); color: var(--fg); min-height: 100vh; }
+    </style>
+</head>
+<body class="flex flex-col">
+    <nav class="border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-md">
+        <div class="container mx-auto flex h-20 items-center justify-between px-6">
+            <a href="cart.html" class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                <span id="backToCart" class="font-bold">Cart</span>
+            </a>
+            <h1 id="checkoutTitle" class="text-xl font-black italic">FINAL STEPS</h1>
+            <div class="w-10"></div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12 max-w-2xl">
+        <div id="checkoutForm" class="bg-[var(--card)] border border-[var(--border)] p-8 rounded-2xl shadow-xl space-y-8">
+            <div class="space-y-6">
+                <div>
+                    <label id="addressLabel" class="block text-sm font-bold mb-2 uppercase tracking-widest">Delivery Address</label>
+                    <input id="address" type="text" required class="w-full bg-[var(--input-bg)] border border-[var(--border)] rounded-xl py-4 px-6 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/10 transition-all">
+                </div>
+                <div>
+                    <label id="cityLabel" class="block text-sm font-bold mb-2 uppercase tracking-widest">City</label>
+                    <input id="city" type="text" required class="w-full bg-[var(--input-bg)] border border-[var(--border)] rounded-xl py-4 px-6 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/10 transition-all">
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-[var(--border)]">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="subtotalLabel" class="font-bold opacity-60">Subtotal</span>
+                    <span id="totalPrice" class="text-xl font-black">$0.00</span>
+                </div>
+                <button onclick="confirmOrder()" id="confirmBtn" class="w-full bg-primary-600 text-white py-5 rounded-2xl text-xl font-black shadow-xl shadow-primary-500/30 hover:bg-primary-700 transition-all">
+                    CONFIRM ORDER
+                </button>
+            </div>
+        </div>
+
+        <div id="successMessage" class="hidden text-center py-20 space-y-8">
+            <div class="w-24 h-24 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-green-500/40">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="space-y-4">
+                <h2 id="successTitle" class="text-4xl font-black tracking-tighter">ORDER CONFIRMED</h2>
+                <p id="successText" class="text-xl opacity-60">Prepare for delivery, Gamer.</p>
+            </div>
+            <button onclick="location.href='store.html'" id="homeBtn" class="inline-flex items-center gap-2 text-primary-500 font-bold hover:underline text-lg">
+                Back to the Armory
+            </button>
+        </div>
+    </main>
+
+    <script>
+        let lang = localStorage.getItem('lang') || 'en';
+        let theme = localStorage.getItem('theme') || 'dark';
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        function updateUI() {
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.className = theme;
+            document.getElementById('backToCart').textContent = lang === 'ar' ? 'السلة' : 'Cart';
+            document.getElementById('checkoutTitle').textContent = lang === 'ar' ? 'الدفع' : 'FINAL STEPS';
+            document.getElementById('addressLabel').textContent = lang === 'ar' ? 'عنوان التوصيل' : 'Delivery Address';
+            document.getElementById('cityLabel').textContent = lang === 'ar' ? 'المدينة' : 'City';
+            document.getElementById('subtotalLabel').textContent = lang === 'ar' ? 'المجموع الفرعي' : 'Subtotal';
+            document.getElementById('confirmBtn').textContent = lang === 'ar' ? 'تأكيد الطلب' : 'CONFIRM ORDER';
+            document.getElementById('successTitle').textContent = lang === 'ar' ? 'تم تأكيد الطلب' : 'ORDER CONFIRMED';
+            document.getElementById('successText').textContent = lang === 'ar' ? 'استعد للاستلام أيها الجيمر' : 'Prepare for delivery, Gamer.';
+            document.getElementById('homeBtn').textContent = lang === 'ar' ? 'العودة للمتجر' : 'Back to the Armory';
+
+            const total = cart.reduce((acc, item) => acc + item.price, 0);
+            document.getElementById('totalPrice').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function confirmOrder() {
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+
+            if (!address || !city) {
+                alert(lang === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill all fields');
+                return;
+            }
+
+            document.getElementById('checkoutForm').classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+            localStorage.setItem('cart', '[]');
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Store - Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#3b82f6', 600: '#2563eb' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --bg: #f8fafc; --fg: #020617; --border: #e2e8f0; --card: #ffffff; }
+        .dark { --bg: #020617; --fg: #f8fafc; --border: #1e293b; --card: #0f172a; }
+        body { background-color: var(--bg); color: var(--fg); min-height: 100vh; display: flex; flex-direction: column; }
+        .product-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1); }
+    </style>
+</head>
+<body class="flex flex-col">
+    <nav class="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-md">
+        <div class="container mx-auto flex h-20 items-center justify-between px-6">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white font-black text-xl">G</div>
+                <span class="font-black text-2xl tracking-tighter hidden md:block">GAMER STORE</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleLang()" class="p-2.5 rounded-xl border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
+                    <span id="langText" class="text-xs font-bold">AR/EN</span>
+                </button>
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
+                    <svg id="sunIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg>
+                    <svg id="moonIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+                <a href="cart.html" class="relative p-2.5 rounded-xl border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                    <span id="cartCount" class="absolute -top-1 -right-1 bg-primary-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[var(--bg)]">0</span>
+                </a>
+                <button onclick="logout()" class="p-2.5 rounded-xl border border-red-500/20 text-red-500 hover:bg-red-500/10 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="container mx-auto px-6 py-12">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--border)] pb-8">
+            <div class="space-y-2">
+                <h1 id="pageTitle" class="text-4xl font-black tracking-tight">THE ARMORY</h1>
+                <p id="pageSub" class="opacity-60 font-medium">Equip yourself with the best gear</p>
+            </div>
+            <div class="relative w-full md:w-80">
+                <input type="text" id="search" placeholder="Search gear..." oninput="render()" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl py-3 px-12 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/10 outline-none transition-all">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 opacity-40" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 pb-24">
+        <div id="products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+    </main>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Cyberpunk 2077', price: 59.99, image: 'https://images.unsplash.com/photo-1605898918448-43093296c093?auto=format&fit=crop&w=400&q=80', cat: 'Game' },
+            { id: 2, name: 'GeForce RTX 4090', price: 1599.99, image: 'https://images.unsplash.com/photo-1591405351990-4726e331f141?auto=format&fit=crop&w=400&q=80', cat: 'Hardware' },
+            { id: 3, name: 'Custom Keyboard', price: 129.99, image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=400&q=80', cat: 'Accessory' },
+            { id: 4, name: 'Elden Ring', price: 49.99, image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=400&q=80', cat: 'Game' },
+            { id: 5, name: 'UltraWide Monitor', price: 799.99, image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=400&q=80', cat: 'Hardware' },
+            { id: 6, name: 'Pro Gaming Mouse', price: 89.99, image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=400&q=80', cat: 'Accessory' }
+        ];
+
+        let lang = localStorage.getItem('lang') || 'en';
+        let theme = localStorage.getItem('theme') || 'dark';
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        function updateUI() {
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.className = theme;
+            document.getElementById('cartCount').textContent = cart.length;
+            document.getElementById('pageTitle').textContent = lang === 'ar' ? 'المتجر' : 'THE ARMORY';
+            document.getElementById('pageSub').textContent = lang === 'ar' ? 'جهز نفسك بأفضل العتاد' : 'Equip yourself with the best gear';
+            document.getElementById('search').placeholder = lang === 'ar' ? 'ابحث عن العتاد...' : 'Search gear...';
+
+            if (theme === 'dark') {
+                document.getElementById('sunIcon').classList.remove('hidden');
+                document.getElementById('moonIcon').classList.add('hidden');
+            } else {
+                document.getElementById('sunIcon').classList.add('hidden');
+                document.getElementById('moonIcon').classList.remove('hidden');
+            }
+        }
+
+        function toggleLang() { lang = lang === 'en' ? 'ar' : 'en'; localStorage.setItem('lang', lang); updateUI(); render(); }
+        function toggleTheme() { theme = theme === 'dark' ? 'light' : 'dark'; localStorage.setItem('theme', theme); updateUI(); }
+        function logout() { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+
+        function addToCart(id) {
+            cart.push(products.find(p => p.id === id));
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateUI();
+        }
+
+        function render() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const container = document.getElementById('products');
+            container.innerHTML = products.filter(p => p.name.toLowerCase().includes(query)).map(p => `
+                <div class="product-card group relative bg-[var(--card)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary-500/10">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-primary-600 text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">${p.cat}</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-1 truncate">${p.name}</h3>
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-xl font-black text-primary-500">$${p.price}</span>
+                            <button onclick="addToCart(${p.id})" class="bg-primary-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-all">
+                                ${lang === 'ar' ? 'أضف' : 'ADD'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        updateUI();
+        render();
+    </script>
+</body>
+</html>

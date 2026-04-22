@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Store - Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#3b82f6', 600: '#2563eb' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --bg: #f8fafc; --fg: #020617; }
+        .dark { --bg: #020617; --fg: #f8fafc; }
+        body { background-color: var(--bg); color: var(--fg); overflow: hidden; }
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+            z-index: -1;
+            animation: pulse 4s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative px-4">
+    <div class="hero-glow"></div>
+
+    <div class="text-center space-y-8 max-w-2xl">
+        <div class="space-y-4">
+            <h1 id="welcomeText" class="text-5xl md:text-7xl font-black tracking-tighter">
+                WELCOME, <span id="userName" class="text-primary-500 italic">GAMER</span>
+            </h1>
+            <p id="subText" class="text-xl md:text-2xl opacity-70 font-medium">Ready to level up your setup?</p>
+        </div>
+
+        <div class="pt-8">
+            <button onclick="location.href='store.html'" id="enterBtn" class="group relative inline-flex items-center gap-3 px-12 py-5 bg-primary-600 text-white text-2xl font-bold rounded-full shadow-2xl shadow-primary-500/40 hover:bg-primary-700 transform hover:scale-105 transition-all">
+                <span id="btnText">ENTER STORE</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                welcome: 'WELCOME, ',
+                sub: 'Ready to level up your setup?',
+                btn: 'ENTER STORE'
+            },
+            ar: {
+                welcome: 'مرحباً بك، ',
+                sub: 'هل أنت مستعد لترقية عتادك؟',
+                btn: 'دخول المتجر'
+            }
+        };
+
+        const lang = localStorage.getItem('lang') || 'en';
+        const theme = localStorage.getItem('theme') || 'dark';
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{"name": "GAMER"}');
+
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.className = theme;
+
+        const t = translations[lang];
+        document.getElementById('welcomeText').innerHTML = `${t.welcome} <span class="text-primary-500 italic">${user.name.toUpperCase()}</span>`;
+        document.getElementById('subText').textContent = t.sub;
+        document.getElementById('btnText').textContent = t.btn;
+    </script>
+</body>
+</html>

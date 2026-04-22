@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Store - Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
+                        background: { light: '#f8fafc', dark: '#020617' },
+                        card: { light: '#ffffff', dark: '#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --bg: #f8fafc; --fg: #020617; --border: #e2e8f0; --card: #ffffff; --input-bg: #ffffff; }
+        .dark { --bg: #020617; --fg: #f8fafc; --border: #1e293b; --card: #0f172a; --input-bg: #1e293b; }
+        body { background-color: var(--bg); color: var(--fg); transition: background-color 0.3s, color 0.3s; }
+        .bg-glow { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-glow"></div>
+    <div class="w-full max-w-md space-y-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-2xl transition-all hover:shadow-primary-500/10">
+        <div class="text-center space-y-2">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary-600 text-white mb-4 shadow-lg shadow-primary-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+            </div>
+            <h1 id="title" class="text-3xl font-extrabold tracking-tight text-primary-500">Create Account</h1>
+        </div>
+
+        <form class="mt-8 space-y-6" id="registerForm">
+            <div class="space-y-4">
+                <div>
+                    <label id="nameLabel" for="name" class="block text-sm font-semibold mb-1">Name</label>
+                    <input id="name" type="text" required class="block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-4 py-3 text-[var(--fg)] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all">
+                </div>
+                <div>
+                    <label id="emailLabel" for="email" class="block text-sm font-semibold mb-1">Email</label>
+                    <input id="email" type="email" required class="block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-4 py-3 text-[var(--fg)] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all">
+                </div>
+                <div>
+                    <label id="passwordLabel" for="password" class="block text-sm font-semibold mb-1">Password</label>
+                    <input id="password" type="password" required class="block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-4 py-3 text-[var(--fg)] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all">
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full rounded-lg bg-primary-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-primary-500/30 hover:bg-primary-700 transform hover:-translate-y-0.5 transition-all">Register</button>
+        </form>
+
+        <div class="text-center pt-4">
+            <p class="text-sm opacity-70">
+                <span id="haveAccount">Already have an account?</span>
+                <a href="index.html" id="loginLink" class="font-bold text-primary-500 hover:text-primary-600 transition-colors">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                title: 'Create Account',
+                nameLabel: 'Name',
+                emailLabel: 'Email',
+                passwordLabel: 'Password',
+                submitBtn: 'Register',
+                haveAccount: 'Already have an account?',
+                loginLink: 'Login',
+                exists: 'User already exists'
+            },
+            ar: {
+                title: 'إنشاء حساب جديد',
+                nameLabel: 'الاسم',
+                emailLabel: 'البريد الإلكتروني',
+                passwordLabel: 'كلمة المرور',
+                submitBtn: 'إنشاء حساب',
+                haveAccount: 'لديك حساب بالفعل؟',
+                loginLink: 'سجل دخول',
+                exists: 'المستخدم موجود بالفعل'
+            }
+        };
+
+        let lang = localStorage.getItem('lang') || 'en';
+        let theme = localStorage.getItem('theme') || 'dark';
+
+        function updateUI() {
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.className = theme;
+            const t = translations[lang];
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('nameLabel').textContent = t.nameLabel;
+            document.getElementById('emailLabel').textContent = t.emailLabel;
+            document.getElementById('passwordLabel').textContent = t.passwordLabel;
+            document.getElementById('submitBtn').textContent = t.submitBtn;
+            document.getElementById('haveAccount').textContent = t.haveAccount;
+            document.getElementById('loginLink').textContent = t.loginLink;
+        }
+
+        document.getElementById('registerForm').onsubmit = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+            if (users.some(u => u.email === email)) {
+                alert(translations[lang].exists);
+                return;
+            }
+
+            const newUser = { name, email, password };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            window.location.href = 'welcome.html';
+        };
+
+        updateUI();
+    </script>
+</body>
+</html>
