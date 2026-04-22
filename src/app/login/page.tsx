@@ -16,7 +16,7 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === email && u.password === password);
+    const user = users.find((u: { email: string; password: string }) => u.email === email && u.password === password);
 
     if (user) {
       login(user);
